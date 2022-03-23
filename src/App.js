@@ -2,6 +2,7 @@ import './App.css';
 import ReactDOM from 'react-dom';
 import { ethers, utils } from 'ethers';
 import ERC721NFTs from './artifacts/contracts/ERC721NFTs.sol/ERC721NFTs.json';
+import { useState } from 'react';
 
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const MINTER_PRIVATE_KEY = process.env.REACT_APP_MINTER_PRIVATE_KEY;
@@ -19,6 +20,8 @@ let metadataIpfsUri = ""
 let NFT_URL = ""
 
 function App() {
+
+  let [newMintPrice, setMintPrice] = useState();
 
   async function connectWallet() {
     if (typeof window.ethereum !== 'undefined') {
@@ -183,6 +186,17 @@ function App() {
     }
   }
 
+  async function getMintPrice() {
+    const mintPrice = await contract.tokenMintPrice();
+    console.log("Mint Price: ", ethers.utils.formatEther(mintPrice));
+  }
+
+  async function setTokenMintPrice() {
+    const settingMintPrice = await contract.setMintPrice(ethers.utils.parseEther(newMintPrice.toString()));
+    settingMintPrice.wait();
+    console.log("Mint price has been updated");
+  }
+
   // async function getRoyalties() {
   //   const salePriceWei = ethers.utils.parseEther(SALE_PRICE);
   //   const royalties = await contract.royaltyInfo(TOKEN_ID, salePriceWei);
@@ -217,6 +231,11 @@ function App() {
         {/* <button onClick={getRoyalties}>Get royalties</button>
         <br></br> */}
         <button onClick={ownerOf}>Owner Of Token</button>
+        <br></br>
+        <button onClick={getMintPrice}>Get mint price</button>
+        <br></br>
+        <button onClick={setTokenMintPrice}>Set Mint Price</button>
+        <input onChange={e => setMintPrice(e.target.value)}></input>
       </header>
     </div>
   );

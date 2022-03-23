@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract ERC721NFTs is ERC721WithLazyMintingBase {
     using SafeMath for uint256;
 
-    uint256 public constant PRICE = 0.1 ether;
+    uint256 public PRICE = 0.1 ether;
     uint96 public constant DEFAULT_ROYALTY = 800; // In bps / 10000; 1% - 100bps
 
     constructor(string memory name, string memory symbol)
@@ -66,5 +66,21 @@ contract ERC721NFTs is ERC721WithLazyMintingBase {
 
         (bool success, ) = (msg.sender).call{value: balance}("");
         require(success, "Transfer failed.");
+    }
+
+    /**
+     *  Sets mint price for all tokens
+     *
+     */
+    function setMintPrice(uint256 price) external {
+        PRICE = price;
+    }
+
+    /**
+     *  Returns set token prices
+     *
+     */
+    function tokenMintPrice() external view returns (uint256) {
+        return PRICE;
     }
 }
