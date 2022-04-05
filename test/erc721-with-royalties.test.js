@@ -25,7 +25,8 @@ describe('ERC721WithRoyalties', function() {
 
     // Deploy contract
     before(async function() {
-      this.registry = await deploy(contractName, contractName, 'symbol');
+      this.royaltySplitter = await deploy("RoyaltySplitter", [this.accounts[4].address, this.accounts[5].address], [2,6]);
+      this.registry = await deploy(contractName, contractName, 'symbol', this.royaltySplitter.address);
 
       // Grant MINTER_ROLE to the account we're gonna be minting from
       await this.registry.grantRole(await this.registry.MINTER_ROLE(), this.accounts[1].address);
@@ -75,7 +76,8 @@ describe('ERC721WithRoyalties', function() {
 
     // Deploy contract
     before(async function() {
-      this.registry = await deploy(contractName, contractName, 'symbol');
+      this.royaltySplitter = await deploy("RoyaltySplitter", [this.accounts[4].address, this.accounts[5].address], [2,6]);
+      this.registry = await deploy(contractName, contractName, 'symbol', this.royaltySplitter.address);
 
       // Grant MINTER_ROLE to the account we're gonna be minting from
       await this.registry.grantRole(await this.registry.MINTER_ROLE(), this.accounts[1].address);
@@ -129,7 +131,8 @@ describe('ERC721WithRoyalties', function() {
 
     // Deploy contract
     before(async function() {
-      this.registry = await deploy(contractName, contractName, 'symbol');
+      this.royaltySplitter = await deploy("RoyaltySplitter", [this.accounts[4].address, this.accounts[5].address], [2,6]);
+      this.registry = await deploy(contractName, contractName, 'symbol', this.royaltySplitter.address);
 
       // Grant MINTER_ROLE to the account we're gonna be minting from
       await this.registry.grantRole(await this.registry.MINTER_ROLE(), this.accounts[1].address);
@@ -176,7 +179,8 @@ describe('ERC721WithRoyalties', function() {
 
     // Deploy contract
     before(async function() {
-      this.registry = await deploy(contractName, contractName, 'symbol');
+      this.royaltySplitter = await deploy("RoyaltySplitter", [this.accounts[4].address, this.accounts[5].address], [2,6]);
+      this.registry = await deploy(contractName, contractName, 'symbol', this.royaltySplitter.address);
 
       // Mint 1 token
       await this.registry.mintNFT(this.accounts[0].address, 1, METADATA_URL);
@@ -200,7 +204,8 @@ describe('ERC721WithRoyalties', function() {
 
     // Deploy contract
     before(async function() {
-      this.registry = await deploy(contractName, contractName, 'symbol');
+      this.royaltySplitter = await deploy("RoyaltySplitter", [this.accounts[4].address, this.accounts[5].address], [2,6]);
+      this.registry = await deploy(contractName, contractName, 'symbol', this.royaltySplitter.address);
     });
 
     it('mint as owner', async function() {

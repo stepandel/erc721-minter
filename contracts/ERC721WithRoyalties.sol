@@ -11,11 +11,13 @@ contract ERC721WithRoyalties is ERC721WithLazyMintingBase, ERC721Royalty {
     uint256 public constant PRICE = 0.1 ether;
     uint96 public constant DEFAULT_ROYALTY = 800; // In bps / 10000; 1% - 100bps
 
-    constructor(string memory name, string memory symbol)
-        ERC721WithLazyMintingBase(name, symbol)
-    {
+    constructor(
+        string memory name,
+        string memory symbol,
+        address royaltyAddress
+    ) ERC721WithLazyMintingBase(name, symbol) {
         // Set default royalty
-        _setDefaultRoyalty(_msgSender(), DEFAULT_ROYALTY);
+        _setDefaultRoyalty(royaltyAddress, DEFAULT_ROYALTY);
     }
 
     // Override supportsInterface in used in both parents ERC721 & AccessControl
