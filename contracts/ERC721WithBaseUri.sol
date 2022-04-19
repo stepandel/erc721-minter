@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract ERC721WithBaseUri is ERC721URIStorage, AccessControl {
+contract ERC721WithBaseUri is ERC721URIStorage, Ownable {
     using SafeMath for uint256;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -21,20 +21,7 @@ contract ERC721WithBaseUri is ERC721URIStorage, AccessControl {
         string memory symbol,
         string memory baseUri
     ) ERC721(name, symbol) {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-
         BASE_URI = baseUri;
-    }
-
-    // Overrides supportsInterface used in both parents ERC721 & AccessControl
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, AccessControl)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
     }
 
     // Overrides from ERC721 to set custom baseUri for all tokens
@@ -75,12 +62,7 @@ contract ERC721WithBaseUri is ERC721URIStorage, AccessControl {
      *  Withdraw balance to Admin's wallet
      *
      */
-    function withdraw() public payable {
-        require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
-            "Restricted: Not an Admin"
-        );
-
+    function withdraw() public payable onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "No ether left to withdraw");
 
