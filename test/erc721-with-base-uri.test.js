@@ -62,4 +62,33 @@ describe('ERC721WithBaseUri', function() {
     });
   })
 
+  describe("Bulk mint at limit", async function() {
+
+    // Deploy contract
+    before(async function() {
+      this.registry = await deploy(contractName, contractName, 'symbol', 'ipfs://fakeBaseUri');
+
+      // Mint all but 3 tokens
+      for ( let tokenId = 1; tokenId < 98; ++tokenId ) {
+        await this.registry.mint(this.accounts[1].address, 1, { value: ethers.utils.parseEther(NFT_PRICE.toString()) });
+      }
+    });
+
+    it('mint 5 more - fail', async function() {
+      await expect(this.registry.mint(this.accounts[1].address, 5, { value: ethers.utils.parseEther((NFT_PRICE*5).toString()) }))
+        .to.be.revertedWith('Out of tokens');
+    })
+
+    it('mint 4 more - fail', async function() {
+      await expect(this.registry.mint(this.accounts[1].address, 4, { value: ethers.utils.parseEther((NFT_PRICE*4).toString()) }))
+        .to.be.revertedWith('Out of tokens');
+    })
+
+    it('mint 3 more - success', async function() {
+      await expect(this.registry.mint(this.accounts[1].address, 3, { value: ethers.utils.parseEther((NFT_PRICE*3).toString()) }))
+        .to.emit(this.registry, 'Transfer')
+        .withArgs(ethers.constants.AddressZero, this.accounts[1].address, 98);
+    })
+  })
+
 })
