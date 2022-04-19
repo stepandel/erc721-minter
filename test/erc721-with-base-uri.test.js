@@ -33,6 +33,12 @@ describe('ERC721WithBaseUri', function() {
         await expect(await this.registry.connect(this.accounts[1]).tokenURI(tokenId)).to.equal('ipfs://fakeBaseUri/' + tokenId);
       }
     })
+
+    it('mint extra token - fail', async function() {
+
+      await expect(this.registry.mint(this.accounts[1].address, 1, { value: ethers.utils.parseEther(NFT_PRICE.toString()) }))
+        .to.be.revertedWith('Out of tokens');
+    })
   })
 
   describe("Bulk mint", function() {
